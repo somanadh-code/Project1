@@ -1,0 +1,304 @@
+<!DOCTYPE html>  <html lang="en">    <head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width,initial-scale=1.0">    
+<title>Happy Birthday Surprise</title>  <style>    
+:root {    
+    --pink: #ff4da6;    
+    --dark-pink: #d10068;    
+    --cake-bottom: #f796c1;    
+    --cake-mid: #ffb3d9;    
+    --cake-top: #ffe3f0;    
+}    body {
+margin: 0;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+text-align: center;
+background: linear-gradient(135deg, #ffd6e8, #d6f0ff);
+overflow-x: hidden;
+}
+
+.page {
+display: none;
+min-height: 100vh;
+padding: 30px;
+box-sizing: border-box;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+
+.active { display: flex; }
+
+button {
+padding: 15px 35px;
+font-size: 18px;
+border: none;
+border-radius: 50px;
+background: var(--pink);
+color: white;
+cursor: pointer;
+margin-top: 30px;
+box-shadow: 0 5px 15px rgba(209, 0, 104, 0.3);
+transition: transform 0.2s;
+}
+button:hover { transform: scale(1.05); }
+
+/* --- 3 Tier Cake --- */
+.cake-container { position: relative; width: 300px; height: 250px; margin-bottom: 50px; }
+.tier {
+position: absolute; left: 50%; transform: translateX(-50%);
+border: 4px solid #fff; border-radius: 15px 15px 5px 5px;
+transition: all 0.8s ease-in-out;
+}
+.tier-bottom { width: 200px; height: 70px; bottom: 0; background: var(--cake-bottom); z-index: 3; }
+.tier-middle { width: 150px; height: 60px; bottom: 70px; background: var(--cake-mid); z-index: 2; }
+.tier-top { width: 100px; height: 50px; bottom: 130px; background: var(--cake-top); z-index: 1; }
+
+.candle-row {
+position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%);
+width: 100px; display: flex; justify-content: space-around; z-index: 10;
+}
+.candle { font-size: 30px; cursor: pointer; }
+.lit { filter: drop-shadow(0 0 12px orange); }
+
+.cut-left { transform: translateX(-150%) rotate(-25deg) scale(0.5) !important; opacity: 0; }
+.cut-right { transform: translateX(50%) rotate(25deg) scale(0.5) !important; opacity: 0; }
+
+/* --- Fireworks Sky --- */
+#fireworksDisplay {
+display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+z-index: 100; flex-direction: column; justify-content: center; align-items: center;
+}
+#fireworksDisplay h1 {
+color: #fff; font-size: 60px; text-shadow: 0 0 10px #fff, 0 0 20px var(--pink);
+font-family: 'Brush Script MT', cursive; margin: 0;
+}
+
+/* --- Balloons & Gifts --- */
+.balloon { font-size: 70px; cursor: pointer; display: inline-block; margin: 15px; transition: 0.3s; }
+.popped { opacity: 0; transform: scale(0); pointer-events: none; }
+
+.gift-float {
+position: absolute; font-size: 50px; pointer-events: none;
+animation: floatUp 1.5s forwards ease-out; z-index: 200;
+}
+@keyframes floatUp {
+0% { transform: translateY(0) scale(0.5); opacity: 0; }
+30% { opacity: 1; transform: translateY(-50px) scale(1.3); }
+100% { transform: translateY(-150px) scale(1); opacity: 0; }
+}
+
+/* --- Long Wish Message --- */
+.wish-container {
+max-width: 600px; background: white; padding: 40px; border-radius: 30px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-size: 20px;
+line-height: 1.8; color: #333; text-align: left; min-height: 200px;
+}
+
+/* --- Memories --- */
+.memory-item {
+display: none; flex-direction: column; align-items: center;
+animation: fadeIn 1s forwards;
+}
+.memory-item img {
+width: 300px; height: 380px; object-fit: cover;
+border: 10px solid white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.memory-caption { margin-top: 15px; font-weight: bold; color: var(--dark-pink); font-size: 22px; }
+
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+</style>  </head>
+
+<body>  <audio id="bgMusic" loop>    
+    <source src="3-Sirivennala.mp3" type="audio/mpeg">    
+</audio>  <section id="page1" class="page active">    
+    <h1>🎁 A Magical Surprise for You</h1>    
+    <button onclick="startSurprise()">Let's Begin ✨</button>    
+</section>  <section id="page2" class="page">    
+    <h1 id="cakeStatus">Light the candles and make a wish...</h1>    
+    <div class="cake-container">    
+        <div class="candle-row">    
+            <span class="candle" onclick="light(this)">🕯️</span>    
+            <span class="candle" onclick="light(this)">🕯️</span>    
+            <span class="candle" onclick="light(this)">🕯️</span>    
+        </div>    
+        <div id="t1" class="tier tier-top"></div>    
+        <div id="t2" class="tier tier-middle"></div>    
+        <div id="t3" class="tier tier-bottom"></div>    
+    </div>    
+    <button onclick="handleCakeAction()">Blow Candles 💨</button>    
+</section>  <div id="fireworksDisplay">    
+    <h1>Happy Birthday Siri Vennela!  </h1>    
+    <button onclick="endFireworks()" style="background:rgba(255,255,255,0.2); border:1px solid #fff;">Next Step 🎈</button>    
+</div>  <section id="page3" class="page">    
+    <h1>🎈 Pop the balloons to find your gifts!</h1>    
+    <div id="balloonField">    
+        <span class="balloon" data-gift="🧸" onclick="pop(this)">🎈</span>    
+        <span class="balloon" data-gift="🍫" onclick="pop(this)">🎈</span>    
+        <span class="balloon" data-gift="⌚" onclick="pop(this)">🎈</span>    
+        <span class="balloon" data-gift="🌹" onclick="pop(this)">🎈</span>    
+        <span class="balloon" data-gift="💎" onclick="pop(this)">🎈</span>    
+    </div>    
+    <button onclick="checkBalloons()">Check My Message</button>    
+</section>  <section id="page4" class="page">    
+    <div class="wish-container">    
+        <p id="typingWish"></p>    
+    </div>    
+    <button id="memBtn" style="display:none;" onclick="startMemories()">See Our Memories 📸</button>    
+</section>  <section id="page5" class="page">    
+    <div id="memoryStage">    
+        <div class="memory-item">    
+            <img src="InShot_20260426_201906291.jpg" alt="Memory 1" >    
+            <p class="memory-caption">Started as school friends. ❤️</p>    
+        </div>    
+        <div class="memory-item">    
+            <img src="InShot_20260426_201754788.jpg" alt="Memory 2">    
+            <p class="memory-caption">Stayed through every teenage adventure. ✨</p>    
+        </div>    
+        <div class="memory-item">    
+            <img src="InShot_20260426_202101531.jpg" alt="Memory 3">    
+            <p class="memory-caption"> Best friends who grew up together stay forever..</p>    
+        </div>           
+           <div class="memory-item">    
+            <img src="InShot_20260426_203013812.jpg" alt="Memory 4">    
+            <p class="memory-caption">Some bonds only time makes stronger.</p>    
+        </div>    
+        <div class="memory-item">    
+            <img src="InShot_20260426_203038330.jpg" alt="Memory 5">    
+            <p class="memory-caption">Forever grateful for this unbreakable bond.</p>    
+        </div>    
+
+
+    </div>    
+    <button id="nextMemBtn" onclick="showNextMemory()">Next Memory ➡️</button>    
+    <div id="finalMsg" style="display:none;">    
+        <h2 style="color:var(--dark-pink)">Lots of Love to you </h2>    
+        <button onclick="location.reload()">Start Over</button>    
+    </div>    
+</section>  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>  <script>    
+let fireworkTimer;    
+const longWishText = "Happy birthday Siri vennela🌕. Celebrate your day with lots of joy and laughs .\n\n We are friends from our schooling. We studied together and enjoyed it a lot. We were class leaders in our school time.You never treated me as a competitor 🍃, you were always there when I needed  support 💥.  Being separated school from 9th since we continued our friendship.I have been in every phase of your life since we met🤝. I experienced your anger and care for me❤️🔥. You are my supporter, motivator and everything. You are the only person who knows me, stayed in my hard times.🥺.I know you.How much you suffer in your initial phases. Life is not fixed in the constant phase💯. Good things takes time💫. Once we shared our school life journey, intermediate  and  now we are sharing btech  College life journey🫂.Once again Happiest birthday to you💗. I always there for you✨. I hope you will get success in your life⚡. Achieve your dreams and travel the world✈️ " ;
+ function nextPage(n){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById('page'+n).classList.add('active');
+}
+
+function startSurprise(){
+document.getElementById("bgMusic").play().catch(()=>{});
+nextPage(2);
+}
+
+function light(el){
+el.innerHTML = "🔥";
+el.classList.add("lit");
+}
+
+function handleCakeAction(){
+if(document.querySelectorAll('.candle.lit').length < 3) {
+alert("Please light all the candles! 🔥");
+return;
+}
+// Blow out: Fire disappears, returns to candle
+document.querySelectorAll('.candle').forEach(c => {
+c.innerHTML = "🕯️";
+c.classList.remove('lit');
+});
+
+setTimeout(() => {    
+    document.getElementById('cakeStatus').innerText = "Cutting the cake...";    
+    document.getElementById('t1').classList.add('cut-left');    
+    document.getElementById('t2').classList.add('cut-right');    
+    document.getElementById('t3').classList.add('cut-left');    
+    setTimeout(startRealisticFireworks, 1000);    
+}, 1200);
+
+}
+
+function startRealisticFireworks() {
+document.getElementById('fireworksDisplay').style.display = 'flex';
+fireworkTimer = setInterval(() => {
+confetti({
+particleCount: 120, startVelocity: 45, spread: 360,
+origin: { x: Math.random(), y: Math.random() - 0.2 },
+colors: ['#ff0000', '#ffd700', '#ffffff', '#ff4da6', '#00ff00', '#00ffff'],
+gravity: 0.8, scalar: 1.2
+});
+}, 450);
+}
+
+function endFireworks() {
+clearInterval(fireworkTimer);
+document.getElementById('fireworksDisplay').style.display = 'none';
+nextPage(3);
+}
+
+function pop(el){
+if(el.classList.contains("popped")) return;
+
+// Create floating gift    
+const giftEmoji = el.getAttribute('data-gift');    
+const gift = document.createElement('div');    
+gift.className = 'gift-float';    
+gift.innerHTML = giftEmoji;    
+    
+const rect = el.getBoundingClientRect();    
+gift.style.left = (rect.left + rect.width/2 - 20) + 'px';    
+gift.style.top = (rect.top) + 'px';    
+document.body.appendChild(gift);    
+
+el.classList.add("popped");    
+confetti({    
+    particleCount: 30, spread: 60,    
+    origin: { x: (rect.left + rect.width/2) / window.innerWidth, y: (rect.top + rect.height/2) / window.innerHeight }    
+});    
+
+setTimeout(() => gift.remove(), 1500);
+
+}
+
+function checkBalloons(){
+if(document.querySelectorAll('.balloon:not(.popped)').length === 0){
+nextPage(4);
+typeWriter();
+} else {
+alert("Pop all balloons to find your gifts first! 🎈");
+}
+}
+
+function typeWriter() {
+let i = 0;
+let target = document.getElementById("typingWish");
+function type() {
+if (i < longWishText.length) {
+target.innerHTML += longWishText.charAt(i) === '\n' ? '<br>' : longWishText.charAt(i);
+i++;
+setTimeout(type, 45);
+} else {
+document.getElementById('memBtn').style.display = "block";
+}
+}
+type();
+}
+
+let currentMemory = 0;
+function startMemories() {
+nextPage(5);
+showNextMemory();
+}
+
+function showNextMemory() {
+let items = document.querySelectorAll('.memory-item');
+if (currentMemory < items.length) {
+items.forEach(item => item.style.display = 'none');
+items[currentMemory].style.display = 'flex';
+currentMemory++;
+} else {
+document.getElementById('memoryStage').style.display = 'none';
+document.getElementById('nextMemBtn').style.display = 'none';
+document.getElementById('finalMsg').style.display = 'block';
+confetti({ particleCount: 400, spread: 200, origin: {y: 0.6} });
+}
+}
+</script>  </body>
+
+</html>
